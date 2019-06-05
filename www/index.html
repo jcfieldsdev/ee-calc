@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en"><head><title>EE Calc</title>
+<meta charset="utf-8">
+<meta name="title" content="EE Calc">
+<meta name="description" content="An RPN calculator with complex number support.">
+<meta name="viewport" content="initial-scale=1.0">
+<link href="mailto:jcfields@jcfields.dev" rel="author" title="J.C. Fields">
+<link href="layout/manifest.json" rel="manifest" type="application/json">
+<link href="layout/style.css" media="screen" rel="stylesheet" type="text/css">
+<link href="layout/favicon.png" rel="shortcut icon" type="image/png">
+<link href="layout/homeicon.png" rel="apple-touch-icon-precomposed" type="image/png">
+<script src="scripts/decimal.js" type="text/javascript"></script>
+<script src="scripts/calc.js" type="text/javascript"></script></head>
+<body><header><h1>EE Calc</h1></header>
+<main><noscript><p>Must have JavaScript enabled.</p></noscript>
+<div id="display">
+	<table id="stack"><tr><td class="row">0</td><td class="reg">x</td></tr></table>
+</div>
+<div id="status">
+	<div><button type="button" value="stack" title="Toggle Stack [Y]" class="tape">stack</button>
+	<button type="button" value="tape" title="Toggle Tape [T]" class="tape">tape</button>
+	<button type="button" value="tape" title="Undo [Ctrl+Z or Cmd+Z]" id="undo">undo</button></div>
+	<div>Depth: <span id="depth">0</span></div>
+	<div>Memory: <span id="memory">0</span></div>
+	<div id="error"><span></span></div>
+</div>
+<div id="calc">
+	<table><tr>
+		<td><button type="button" value="2" title="Switch to Binary" class="base">bin</button></td>
+		<td><button type="button" value="10" title="Switch to Decimal" class="active base">dec</button></td>
+		<td><button type="button" value="16" title="Switch to Hexadecimal" class="base">hex</button></td>
+		<td><button type="button" value="roll" title="RPN Roll Down [Down Arrow]" class="rpn stack">roll</button></td>
+		<td><button type="button" value="swap" title="RPN Swap [Left/Right Arrow]" class="rpn stack">swap</button></td>
+		<td><button type="button" value="drop" title="RPN Drop [Shift+Backspace or Del]" class="rpn stack">drop</button></td>
+		<td><button type="button" title="Toggle Degrees/Radians" id="deg" class="toggle"><span>deg</span><span>rad</span></button></td>
+		<td><button type="button" title="Toggle Rectangular/Polar Form" id="rect" class="toggle"><span>rect</span><span>polar</span></button></td>
+		<td><button type="button" title="Toggle Imaginary Input [i or j]" id="imag"><span>&#x1d48b;</span><span>&theta;</span></button></td>
+	</tr>
+	<tr>
+		<td><button type="button" value="0" title="Angular Frequency of 60&nbsp;Hz (in rad/s)" class="constant">&omega;</button></td>
+		<td><button type="button" value="1" title="Elementary Charge (in C)" class="constant"><i>q</i><sub>e</sub></button></td>
+		<td><button type="button" value="2" title="Coulomb&rsquo;s Constant (in N&middot;m&sup2;/C&sup2;)" class="constant"><i>k</i><sub>e</sub></button></td>
+		<td><button type="button" value="3" title="Electrical Permittivity of Free Space (in F/m)" class="constant">&epsilon;<sub>0</sub></button></td>
+		<td><button type="button" value="4" title="Magnetic Permeability of Free Space (in H/m)" class="constant">&mu;<sub>0</sub></button></td>
+		<td><button type="button" value="5" title="Magnetic Flux Quantum (in Wb)" class="constant">&phi;<sub>0</sub></button></td>
+		<td><button type="button" value="6" title="Conductance Quantum (in S)" class="constant"><i>G</i><sub>0</sub></button></td>
+		<td><button type="button" value="7" title="Characteristic Impedance of Vacuum (in &ohm;)" class="constant"><i>Z</i><sub>0</sub></button></td>
+		<td><button type="button" value="8" title="Pi [P]" class="constant">&pi;</button></td>
+	</tr>
+	<tr>
+		<td><button type="button" value="13" class="number" disabled="disabled">D</button></td>
+		<td><button type="button" value="14" class="number" disabled="disabled">E</button></td>
+		<td><button type="button" value="15" class="number" disabled="disabled">F</button></td>
+		<td><button type="button" value="square" title="Square [@]" class="algebra unary">x<sup>2</sup></button></td>
+		<td><button type="button" value="power" title="Power [^]" class="algebra binary">y<sup>x</sup></button></td>
+		<td><button type="button" value="factorial" title="Factorial [!]" class="algebra unary">x!</button></td>
+		<td><button type="button" value="ln" title="Natural Logarithm" class="log unary">ln</button></td>
+		<td><button type="button" value="log10" title="Common Logarithm" class="log unary">log<sub>10</sub></button></td>
+		<td><button type="button" value="piTimes" title="Pi times x" class="pi stack">&pi;&middot;x</button></td>
+	</tr>
+	<tr>
+		<td><button type="button" value="10" class="number" disabled="disabled">A</button></td>
+		<td><button type="button" value="11" class="number" disabled="disabled">B</button></td>
+		<td><button type="button" value="12" class="number" disabled="disabled">C</button></td>
+		<td><button type="button" value="sqrt" title="Square Root [$]" class="algebra unary">&Sqrt;x</button></td>
+		<td><button type="button" value="root" title="Inverse Power" class="algebra binary"><sup>x</sup>&Sqrt;y</button></td>
+		<td><button type="button" value="hypotenuse" title="Hypotenuse" class="trig binary">hyp</button></td>
+		<td><button type="button" value="exp" title="Exponential Function" class="log unary">e<sup>x</sup></button></td>
+		<td><button type="button" value="pow10" title="Power of 10" class="log unary">10<sup>x</sup></button></td>
+		<td><button type="button" value="piOver" title="Pi over x" class="pi stack">&pi;/x</button></td>
+	</tr>
+	<tr>
+		<td><button type="button" value="7" class="number">7</button></td>
+		<td><button type="button" value="8" class="number">8</button></td>
+		<td><button type="button" value="9" class="number">9</button></td>
+		<td><button type="button" value="divide" title="Divide [/]" class="operator binary">&divide;</button></td>
+		<td><button type="button" value="clearAll" title="Clear All [Alt+Esc]" class="clear stack">AC</button></td>
+		<td><button type="button" value="store" title="Store to Memory [Shift+S]" class="memory stack">sto</button></td>
+		<td><button type="button" value="sin" title="Sine" class="trig unary">sin</button></td>
+		<td><button type="button" value="cos" title="Cosine" class="trig unary">cos</button></td>
+		<td><button type="button" value="tan" title="Tangent" class="trig unary">tan</button></td>
+	</tr>
+	<tr>
+		<td><button type="button" value="4" class="number">4</button></td>
+		<td><button type="button" value="5" class="number">5</button></td>
+		<td><button type="button" value="6" class="number">6</button></td>
+		<td><button type="button" value="multiply" title="Multiply [*]" class="operator binary">&times;</button></td>
+		<td><button type="button" value="clear" title="Clear [Esc]" class="clear stack">C</button></td>
+		<td><button type="button" value="recall" title="Recall from Memory [Shift+R]" id="recall" class="memory stack">rcl</button></td>
+		<td><button type="button" value="asin" title="Inverse Sine" class="trig unary">sin<sup>&minus;1</sup></button></td>
+		<td><button type="button" value="acos" title="Inverse Cosine" class="trig unary">cos<sup>&minus;1</sup></button></td>
+		<td><button type="button" value="atan" title="Inverse Tangent" class="trig unary">tan<sup>&minus;1</sup></button></td>
+	</tr>
+	<tr>
+		<td><button type="button" value="1" class="number">1</button></td>
+		<td><button type="button" value="2" class="number">2</button></td>
+		<td><button type="button" value="3" class="number">3</button></td>
+		<td><button type="button" value="subtract" title="Subtract [-]" class="operator binary">&minus;</button></td>
+		<td><button type="button" value="backspace" title="Backspace [Backspace]" class="clear stack">&#x232b;</button></td>
+		<td><button type="button" value="invert" title="Inverse [\]" class="unary">1/x</button></td>
+		<td><button type="button" value="sinh" title="Hyperbolic Sine" class="trig unary">sinh</button></td>
+		<td><button type="button" value="cosh" title="Hyperbolic Cosine" class="trig unary">cosh</button></td>
+		<td><button type="button" value="tanh" title="Hyperbolic Tangent" class="trig unary">tanh</button></td>
+	</tr>
+	<tr>
+		<td><button type="button" value="0" class="number">0</button></td>
+		<td><button type="button" value="toggleDecInput" title="Enter Decimal [.]" class="stack">.</button></td>
+		<td><button type="button" title="Enter Exponent [E]" id="ee">exp</button></td>
+		<td><button type="button" value="add" title="Add [+]" class="operator binary">+</button></td>
+		<td><button type="button" value="newLine" title="Enter [Enter]" class="operator stack">Enter</button></td>
+		<td><button type="button" value="negate" title="Change Sign [S]" class="stack">+/&minus;</button></td>
+		<td><button type="button" value="asinh" title="Inverse Hyperbolic Sine" class="trig unary">sinh<sup>&minus;1</sup></button></td>
+		<td><button type="button" value="acosh" title="Inverse Hyperbolic Cosine" class="trig unary">cosh<sup>&minus;1</sup></button></td>
+		<td><button type="button" value="atanh" title="Inverse Hyperbolic Tangent" class="trig unary">tanh<sup>&minus;1</sup></button></td>
+	</tr></table>
+	<div id="bank"></div>
+</div>
+<div id="tape" class="overlay">
+	<div class="caption"></div>
+	<ul id="lines"></ul>
+	<div class="buttons"><button type="button" id="pin">Pin</button>
+	<button type="button" class="close">Close</button></div>
+</div>
+<div id="constant" class="overlay">
+	<div class="caption">Edit constant</div>
+	<p>The value of this constant will be replaced with the value of the x register.</p>
+	<table><tr><td><label for="symbol">Symbol:</label></td><td><input type="text" id="symbol"></td></tr>
+	<tr><td><label for="title">Title:</label></td><td><input type="text" id="title"></td></tr></table>
+	<div class="buttons"><button type="button" id="save">Save</button>
+	<button type="button" id="reset">Reset</button>
+	<button type="button" class="close">Close</button></div>
+</div></main>
+<footer>Created by <a href="mailto:jcfields@jcfields.dev">J.C. Fields</a>. Hosted by <a href="https://github.com/jcfieldsdev/ee-calc">GitHub</a>.</footer></body></html>

@@ -1,0 +1,430 @@
+@font-face {
+	font-family: Muli;
+	font-style: normal;
+	font-weight: normal;
+	src: url(fonts/Muli-Light.woff2) format("woff2");
+}
+
+@font-face {
+	font-family: Muli;
+	font-style: normal;
+	font-weight: bold;
+	src: url(fonts/Muli-SemiBold.woff2) format("woff2");
+}
+
+@font-face {
+	font-family: Muli;
+	font-style: italic;
+	font-weight: normal;
+	src: url(fonts/Muli-LightItalic.woff2) format("woff2");
+}
+
+@font-face {
+	font-family: Muli;
+	font-style: italic;
+	font-weight: bold;
+	src: url(fonts/Muli-SemiBoldItalic.woff2) format("woff2");
+}
+
+* {
+	touch-action: manipulation;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+}
+
+body, html, main {
+	height: 100%;
+}
+
+button {
+	background: #c5c5c5 linear-gradient(#c5c5c5, #e4e4e4);
+	border: 0;
+	color: #000;
+	font-family: inherit;
+	line-height: 100%;
+	text-align: center;
+}
+
+button#pin, button#reset {
+	margin-right: 1em;
+}
+
+button.active, button.toggle {
+	background: #d8cfaf linear-gradient(#d8cfaf, #e9e6c4);
+	color: #000;
+}
+
+button.clear, div#error span {
+	background: #bbacb4 linear-gradient(#bbacb4, #decbd5);
+	color: #c00000;
+}
+
+button.constant {
+	background: #838986 linear-gradient(#838986, #949b96);
+	color: inherit;
+}
+
+button.memory, div#bank button:first-child {
+	background: #829191 linear-gradient(#829191, #92a3a4);
+	color: inherit;
+}
+
+button.operator {
+	background: #264653 linear-gradient(#264653, #335f72);
+	color: inherit;
+}
+
+button.rpn {
+	background: #4c5b61 linear-gradient(#4c5b61, #596e77);
+	color: inherit;
+}
+
+button:disabled {
+	color: #a6a6a6;
+}
+
+button:hover:not(:disabled) {
+	filter: brightness(120%);
+	transition: 0.1s filter;
+}
+
+div#bank {
+	min-height: 2em;
+	overflow: auto;
+	padding: 1em 0 0 1em;
+	white-space: nowrap;
+}
+
+div#bank button {
+	background: #2c423f linear-gradient(#2c423f, #3b5855);
+	color: inherit;
+	font-size: 1rem;
+	margin-right: 0.5em;
+}
+
+div#bank button, div#error span {
+	border: 1px solid #000;
+	box-shadow: 2px 2px #000;
+	padding: 0.25em 0.5em;
+}
+
+div#calc {
+	bottom: 4em;
+}
+
+div#calc, div#display, div#status, footer {
+	position: absolute;
+}
+
+div#calc, div#display, div#status, main {
+	width: 60rem;
+}
+
+div#calc table {
+	border-collapse: collapse;
+	border-spacing: 0;
+	bottom: 4em;
+	box-shadow: 4px 4px #000;
+	margin: auto;
+}
+
+div#calc table button, input#symbol {
+	font-size: 1.5rem;
+	height: 2.5em;
+	line-height: 250%;
+	margin: 0;
+	width: 4em;
+}
+
+div#calc td {
+	border: 2px solid #000;
+	padding: 0;
+}
+
+div#display {
+	background: transparent linear-gradient(#000, transparent);
+	bottom: 42em;
+	padding: 0.5em 0;
+	top: 0;
+}
+
+div#error {
+	flex-basis: 50%;
+}
+
+div#status {
+	bottom: 40em;
+	display: flex;
+	justify-content: space-evenly;
+}
+
+div#status button {
+	background: none;
+	border: 1px solid #a0a0a0;
+	color: inherit;
+	font-size: 1rem;
+	padding: 0.25em;
+}
+
+div#status div {
+	text-align: center;
+	width: 33%;
+}
+
+div.buttons, input#symbol, noscript {
+	text-align: center;
+}
+
+div.caption {
+	font-size: 1.5rem;
+	font-weight: bold;
+	text-shadow: 2px 2px #606060;
+}
+
+div.overlay {
+	opacity: 0;
+	visibility: hidden;
+}
+
+div.overlay, noscript {
+	background: #000;
+	border: 1px solid #fff;
+	box-shadow: 3px 3px #fff;
+	color: inherit;
+	font-size: 1.25rem;
+	left: 50%;
+	padding: 1em;
+	position: fixed;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	width: 24em;
+	z-index: 1;
+}
+
+div.overlay button {
+	margin: 0 0.1em;
+	padding: 0.25em 0.5em;
+}
+
+div.overlay button, input#symbol {
+	font-size: 1.5rem;
+}
+
+div.overlay.open, div.overlay.pinned {
+	opacity: 1;
+	transition: opacity 0.3s;
+	visibility: visible;
+}
+
+div.overlay.pinned button.close {
+	display: none;
+}
+
+div.overlay table {
+	margin: 1em auto 2em;
+}
+
+footer {
+	bottom: 0;
+	font-size: 0.8rem;
+	text-align: center;
+	width: 100%;
+}
+
+footer, footer a {
+	background: none;
+	color: #fff;
+}
+
+footer a {
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+header, span.hidden {
+	display: none;
+}
+
+html {
+	background: #000;
+	color: #fff;
+	font: 12pt/200% Muli, Helvetica, sans-serif;
+	padding: 0;
+}
+
+input {
+	background: #404040 linear-gradient(#404040, #5f5f5f);
+	border: 1px solid #404040;
+	color: #fff;
+	font-family: inherit;
+	font-size: inherit;
+	padding: 0;
+}
+
+input#title {
+	width: 20em;
+}
+
+label {
+	font-weight: bold;
+}
+
+li.operation {
+	background: none;
+	color: #808080;
+	font-style: italic;
+}
+
+main {
+	background: #2c423f;
+	color: inherit;
+	margin: auto;
+}
+
+span.exp {
+	margin-left: 0.5em;
+	vertical-align: super;
+}
+
+span.exp, sub, sup {
+	font-size: 75%;
+}
+
+table#stack {
+	align-items: flex-end;
+	display: flex;
+	flex-direction: column;
+	font-size: 4rem;
+	height: 100%;
+	justify-content: flex-end;
+	line-height: 100%;
+	padding: 0 0.5em;
+	text-align: right;
+	text-shadow: 2px 2px #000;
+	white-space: nowrap;
+}
+
+td.medium {
+	font-size: 80%;
+}
+
+td.reg {
+	font-size: 50%;
+	opacity: 0.25;
+	width: 1em;
+}
+
+td.row {
+	font-variant-numeric: tabular-nums;
+}
+
+td.small {
+	font-size: 60%;
+}
+
+td.tiny {
+	font-size: 50%;
+}
+
+ul#lines {
+	list-style: none;
+	margin: 1em;
+	max-height: 50vh;
+	overflow: auto;
+	padding: 0;
+}
+
+@media (orientation: landscape) {
+	div.overlay.pinned {
+		background: none;
+		border: 0;
+		box-shadow: none;
+		color: inherit;
+		display: flex;
+		flex-direction: column-reverse;
+		height: 100%;
+		left: 0;
+		top: 0;
+		transform: none;
+		width: calc(((100vw - 60rem) / 2) - 3rem);
+	}
+
+	div.overlay.pinned div.caption {
+		display: none;
+	}
+
+	div.overlay.pinned ul#lines {
+		height: 100%;
+		max-height: none;
+		width: 100%;
+	}
+
+	@media (max-height: 1080px) {
+		html {
+			font-size: 10pt;
+		}
+	}
+
+	@media (max-height: 900px) {
+		html {
+			font-size: 9pt;
+		}
+	}
+
+	@media (max-height: 768px) {
+		html {
+			font-size: 8pt;
+		}
+	}
+}
+
+@media (orientation: portrait) {
+	button#pin {
+		display: none;
+	}
+
+	@media (max-width: 834px) {
+		div#calc table {
+			box-shadow: 2px 2px #000;
+		}
+
+		div#calc td {
+			border-width: 1px;
+		}
+
+		footer {
+			font-size: 1rem;
+		}
+
+		html {
+			font-size: 10pt;
+		}
+	}
+
+	@media (max-width: 768px) {
+		html {
+			font-size: 9pt;
+		}
+	}
+
+	@media (max-width: 414px) {
+		html {
+			font-size: 5pt;
+		}
+	}
+
+	@media (max-width: 375px) {
+		html {
+			font-size: 4.5pt;
+		}
+	}
+
+	@media (max-width: 320px) {
+		html {
+			font-size: 4pt;
+		}
+	}
+}
